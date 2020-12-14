@@ -3,7 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30517.126
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LEDRings", ".\LEDRings\LEDRings.csproj", "{1EC48FE1-9C89-4557-B494-0C15ABDACA22}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LEDRings", "LEDRings\LEDRings.csproj", "{1EC48FE1-9C89-4557-B494-0C15ABDACA22}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LEDRings.Tests", "LEDRings.Tests\LEDRings.Tests.csproj", "{C8CD2801-FDB2-4E43-BABF-7D2900AF4C22}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{1EC48FE1-9C89-4557-B494-0C15ABDACA22}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1EC48FE1-9C89-4557-B494-0C15ABDACA22}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1EC48FE1-9C89-4557-B494-0C15ABDACA22}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C8CD2801-FDB2-4E43-BABF-7D2900AF4C22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C8CD2801-FDB2-4E43-BABF-7D2900AF4C22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C8CD2801-FDB2-4E43-BABF-7D2900AF4C22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C8CD2801-FDB2-4E43-BABF-7D2900AF4C22}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
