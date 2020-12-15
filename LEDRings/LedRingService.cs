@@ -18,12 +18,12 @@ namespace LEDRings
 
         public void SetRing(double profibility)
         {
-            var ledState = GetMqttMessages(profibility);
-            var messages = GenerateMqttMessages(ledState);
+            var ledStates = GetLedStates(profibility);
+            var messages = GenerateMqttMessages(ledStates);
             SendMessages(messages);
         }
 
-        private IEnumerable<LedValue> GetMqttMessages(double profibility)
+        private IEnumerable<LedValue> GetLedStates(double profibility)
         {
             var percentage = profibility / MAX_PROFIBILITY;
             var totalOnLeds = (int)Math.Floor(_ledCountRing1 * percentage);
