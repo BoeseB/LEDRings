@@ -76,7 +76,8 @@ namespace LEDRings.Tests
         private MqttMessage[] SetRing(int profibility, int totalLeds, bool isInverted = false)
         {
             var mqttClient = new FakeMqttClient();
-            var sut = new LedRingService(mqttClient, totalLeds, isInverted ? LedRingDirection.CounterClockwise : LedRingDirection.Clockwise);
+            var ringSettings = new LedRingSettings(totalLeds, isInverted ? LedRingDirection.CounterClockwise : LedRingDirection.Clockwise);
+            var sut = new LedRingService(mqttClient, ringSettings);
             sut.SetRing(profibility);
             return mqttClient.SentMessages;
         }

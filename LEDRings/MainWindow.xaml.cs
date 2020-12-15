@@ -31,7 +31,8 @@ namespace LEDRings
         {
             InitializeComponent();
             var mqttClient = new MqttClient();
-            _ledRingService = new LedRingService(mqttClient, 8, LedRingDirection.Clockwise);
+            var ringSettings = new LedRingSettings(8, LedRingDirection.Clockwise);
+            _ledRingService = new LedRingService(mqttClient, ringSettings);
         }
 
         private void ProfibilitySlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
