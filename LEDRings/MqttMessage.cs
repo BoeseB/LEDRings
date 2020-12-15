@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LEDRings.Tests
+namespace LEDRings
 {
     public class MqttMessage
     {

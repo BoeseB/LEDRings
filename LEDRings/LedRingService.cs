@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 
-namespace LEDRings.Tests
+namespace LEDRings
 {
     public class LedRingService
     {
@@ -14,7 +14,7 @@ namespace LEDRings.Tests
         }
         public MqttMessage[] SetRing(int profibility)
         {
-            var percentage = (double)profibility / (double)MAX_PROFIBILITY;
+            var percentage = profibility / (double)MAX_PROFIBILITY;
             var totalOnLeds = (int)Math.Floor(_ledCountRing1 * percentage);
             return Enumerable.Repeat(LedValue.ON, totalOnLeds)
                 .Concat(Enumerable.Repeat(LedValue.OFF, _ledCountRing1 - totalOnLeds))

@@ -1,4 +1,4 @@
-﻿namespace LEDRings.Tests
+﻿namespace LEDRings
 {
     public enum LedValue
     {
