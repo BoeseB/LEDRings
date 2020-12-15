@@ -37,6 +37,7 @@ namespace LEDRings
         private void ProfibilitySlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             this.profibility = e.NewValue;
+            _ledRingService.SetRing(profibility);
         }
 
         private void AvailableAmountSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -52,7 +53,6 @@ namespace LEDRings
         private void Persist(double profibility, double availableAmount)
         {
             MessageBox.Show($"Persisting profibility: {profibility}, availableAmount: {availableAmount}");
-            _ledRingService.SetRing(profibility);
         }
     }
 }
