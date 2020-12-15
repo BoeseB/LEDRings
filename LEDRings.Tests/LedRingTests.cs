@@ -58,15 +58,25 @@ namespace LEDRings.Tests
             Assert.Equal(expectedMessages, actualMessages);
         }
 
+        [Fact]
+        public void InvertedRingIsHandledCorrectly()
+        {
+            var actualMessages = SetRing(75, 4, true);
+
+            var expectedLedState = new[] { LedValue.OFF, LedValue.ON, LedValue.ON, LedValue.ON };
+            var expectedMessages = ConvertLedRingStateToMessages(expectedLedState);
+            Assert.Equal(expectedMessages, actualMessages);
+        }
+
         private static MqttMessage[] ConvertLedRingStateToMessages(LedValue[] ledRingState)
         {
             return ledRingState.Select((state, index) => new LedControlMessage(index, state)).ToArray();
         }
 
-        private MqttMessage[] SetRing(int profibility, int totalLeds)
+        private MqttMessage[] SetRing(int profibility, int totalLeds, bool isInverted = false)
         {
             var mqttClient = new FakeMqttClient();
-            var sut = new LedRingService(mqttClient, totalLeds);
+            var sut = new LedRingService(mqttClient, totalLeds, isInverted ? LedRingDirection.CounterClockwise : LedRingDirection.Clockwise);
             sut.SetRing(profibility);
             return mqttClient.SentMessages;
         }

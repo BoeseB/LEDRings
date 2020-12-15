@@ -8,12 +8,14 @@ namespace LEDRings
     {
         private const int MAX_PROFIBILITY = 100;
         private readonly int _ledCountRing1;
+        private readonly LedRingDirection _direction;
         private readonly IMqttClient _mqttClient;
 
-        public LedRingService(IMqttClient mqttClient, int ledCountRing1)
+        public LedRingService(IMqttClient mqttClient, int ledCountRing1, LedRingDirection direction)
         {
             _mqttClient = mqttClient;
             _ledCountRing1 = ledCountRing1;
+            _direction = direction;
         }
 
         public void SetRing(double profibility)
@@ -27,8 +29,11 @@ namespace LEDRings
         {
             var percentage = profibility / MAX_PROFIBILITY;
             var totalOnLeds = (int)Math.Floor(_ledCountRing1 * percentage);
-            return Enumerable.Repeat(LedValue.ON, totalOnLeds)
+
+            var state = Enumerable.Repeat(LedValue.ON, totalOnLeds)
                 .Concat(Enumerable.Repeat(LedValue.OFF, _ledCountRing1 - totalOnLeds));
+
+            return _direction == LedRingDirection.Clockwise ? state : state.Reverse();
         }
 
         private IEnumerable<MqttMessage> GenerateMqttMessages(IEnumerable<LedValue> ledState)
