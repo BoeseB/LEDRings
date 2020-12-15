@@ -5,12 +5,8 @@ using Xunit;
 
 namespace LEDRings.Tests
 {
-    public class LedRingTests
+    public partial class LedRingTests
     {
-        private const string TOPIC_TEMPLATE = "some/led{0}/rgb";
-        private const string LED_OFF = "#000000";
-        private const string LED_ON = "#FFFFFF";
-
         private const int MAX_PROFIBILITY = 100;
 
         // 8 LED Ring
@@ -24,21 +20,40 @@ namespace LEDRings.Tests
         //76-87 = 7
         //88-100 = 8
 
+        [Fact]
+        public void CorrectMqttMessageForLedOnIsGenerated()
+        {
+            var expectedMesage = new MqttMessage("some/led7/rgb", "#FFFFFF");
+            var actual = new LedControlMessage(7, LedValue.ON);
+
+            Assert.Equal(actual, expectedMesage);
+        }
+
+        [Fact]
+        public void CorrectMqttMessageForLedOffIsGenerated()
+        {
+            var expectedMesage = new MqttMessage("some/led4/rgb", "#000000");
+            var actual = new LedControlMessage(4, LedValue.OFF);
+
+            Assert.Equal(actual, expectedMesage);
+        }
+
+
         [Theory]
-        [InlineData(4, 0, new[] { LED_OFF, LED_OFF, LED_OFF, LED_OFF })]
-        [InlineData(4, 25, new[] { LED_ON, LED_OFF, LED_OFF, LED_OFF })]
-        [InlineData(4, 50, new[] { LED_ON, LED_ON, LED_OFF, LED_OFF })]
-        [InlineData(4, 75, new[] { LED_ON, LED_ON, LED_ON, LED_OFF })]
-        [InlineData(4, 100, new[] { LED_ON, LED_ON, LED_ON, LED_ON })]
-        [InlineData(8, 0, new[] { LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF })]
-        [InlineData(8, 24, new[] { LED_ON, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF })]
-        [InlineData(8, 25, new[] { LED_ON, LED_ON, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF, LED_OFF })]
-        [InlineData(8, 50, new[] { LED_ON, LED_ON, LED_ON, LED_ON, LED_OFF, LED_OFF, LED_OFF, LED_OFF })]
-        [InlineData(8, 74, new[] { LED_ON, LED_ON, LED_ON, LED_ON, LED_ON, LED_OFF, LED_OFF, LED_OFF })]
-        [InlineData(8, 75, new[] { LED_ON, LED_ON, LED_ON, LED_ON, LED_ON, LED_ON, LED_OFF, LED_OFF })]
-        [InlineData(8, 99, new[] { LED_ON, LED_ON, LED_ON, LED_ON, LED_ON, LED_ON, LED_ON, LED_OFF })]
-        [InlineData(8, 100, new[] { LED_ON, LED_ON, LED_ON, LED_ON, LED_ON, LED_ON, LED_ON, LED_ON })]
-        public void SendsCorrectMessagesForSingleLedRing(int ledCount, int profibility, string[] expectedLedState)
+        [InlineData(4, 0, new[] { LedValue.OFF, LedValue.OFF, LedValue.OFF, LedValue.OFF })]
+        [InlineData(4, 25, new[] { LedValue.ON, LedValue.OFF, LedValue.OFF, LedValue.OFF })]
+        [InlineData(4, 50, new[] { LedValue.ON, LedValue.ON, LedValue.OFF, LedValue.OFF })]
+        [InlineData(4, 75, new[] { LedValue.ON, LedValue.ON, LedValue.ON, LedValue.OFF })]
+        [InlineData(4, 100, new[] { LedValue.ON, LedValue.ON, LedValue.ON, LedValue.ON })]
+        [InlineData(8, 0, new[] { LedValue.OFF, LedValue.OFF, LedValue.OFF, LedValue.OFF, LedValue.OFF, LedValue.OFF, LedValue.OFF, LedValue.OFF })]
+        [InlineData(8, 24, new[] { LedValue.ON, LedValue.OFF, LedValue.OFF, LedValue.OFF, LedValue.OFF, LedValue.OFF, LedValue.OFF, LedValue.OFF })]
+        [InlineData(8, 25, new[] { LedValue.ON, LedValue.ON, LedValue.OFF, LedValue.OFF, LedValue.OFF, LedValue.OFF, LedValue.OFF, LedValue.OFF })]
+        [InlineData(8, 50, new[] { LedValue.ON, LedValue.ON, LedValue.ON, LedValue.ON, LedValue.OFF, LedValue.OFF, LedValue.OFF, LedValue.OFF })]
+        [InlineData(8, 74, new[] { LedValue.ON, LedValue.ON, LedValue.ON, LedValue.ON, LedValue.ON, LedValue.OFF, LedValue.OFF, LedValue.OFF })]
+        [InlineData(8, 75, new[] { LedValue.ON, LedValue.ON, LedValue.ON, LedValue.ON, LedValue.ON, LedValue.ON, LedValue.OFF, LedValue.OFF })]
+        [InlineData(8, 99, new[] { LedValue.ON, LedValue.ON, LedValue.ON, LedValue.ON, LedValue.ON, LedValue.ON, LedValue.ON, LedValue.OFF })]
+        [InlineData(8, 100, new[] { LedValue.ON, LedValue.ON, LedValue.ON, LedValue.ON, LedValue.ON, LedValue.ON, LedValue.ON, LedValue.ON })]
+        public void SendsCorrectMessagesForSingleLedRing(int ledCount, int profibility, LedValue[] expectedLedState)
         {
             var actualMessages = SetRing(profibility, ledCount);
 
@@ -46,53 +61,19 @@ namespace LEDRings.Tests
             Assert.Equal(expectedMessages, actualMessages);
         }
 
-        private static MqttMessage[] ConvertLedRingStateToMessages(string[] ledRingState)
+        private static MqttMessage[] ConvertLedRingStateToMessages(LedValue[] ledRingState)
         {
-            return ledRingState.Select((state, index) => GetMessage(index, state)).ToArray();
+            return ledRingState.Select((state, index) => new LedControlMessage(index, state)).ToArray();
         }
 
         private MqttMessage[] SetRing(int profibility, int totalLeds)
         {
             var percentage = (double)profibility / (double)MAX_PROFIBILITY;
             var totalOnLeds = (int)Math.Floor(totalLeds * percentage);
-            return Enumerable.Repeat(LED_ON, totalOnLeds)
-                .Concat(Enumerable.Repeat(LED_OFF, totalLeds - totalOnLeds))
-                .Select((state, index) => GetMessage(index, state))
+            return Enumerable.Repeat(LedValue.ON, totalOnLeds)
+                .Concat(Enumerable.Repeat(LedValue.OFF, totalLeds - totalOnLeds))
+                .Select((state, index) => new LedControlMessage(index, state))
                 .ToArray();
-        }
-
-        public static MqttMessage GetMessage(int ledNumber, string payload) => new MqttMessage(GetTopic(ledNumber), payload);
-
-        private static string GetTopic(int ledNumber) => string.Format(TOPIC_TEMPLATE, ledNumber);
-
-
-        public class MqttMessage
-        {
-            public string Topic { get; }
-            public string Payload { get; }
-
-            public MqttMessage(string topic, string payload)
-            {
-                Topic = topic;
-                Payload = payload;
-            }
-
-            public override string ToString()
-            {
-                return $"Topic: {Topic}, Payload: {Payload}";
-            }
-
-            public override bool Equals(object obj)
-            {
-                return obj is MqttMessage message &&
-                       Topic == message.Topic &&
-                       Payload == message.Payload;
-            }
-
-            public override int GetHashCode()
-            {
-                return HashCode.Combine(Topic, Payload);
-            }
         }
     }
 }
