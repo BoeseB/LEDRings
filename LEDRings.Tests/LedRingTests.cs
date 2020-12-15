@@ -65,7 +65,8 @@ namespace LEDRings.Tests
 
         private MqttMessage[] SetRing(int profibility, int totalLeds)
         {
-            return new LedRingService().SetRing(profibility, totalLeds);
+            var sut = new LedRingService(totalLeds);
+            return sut.SetRing(profibility);
         }
     }
 }
