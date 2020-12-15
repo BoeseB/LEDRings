@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 
 using Xunit;
@@ -7,8 +6,6 @@ namespace LEDRings.Tests
 {
     public partial class LedRingTests
     {
-        private const int MAX_PROFIBILITY = 100;
-
         // 8 LED Ring
         // Prozent = Anzahl LEDS ON
         //    0 = 0
@@ -68,12 +65,7 @@ namespace LEDRings.Tests
 
         private MqttMessage[] SetRing(int profibility, int totalLeds)
         {
-            var percentage = (double)profibility / (double)MAX_PROFIBILITY;
-            var totalOnLeds = (int)Math.Floor(totalLeds * percentage);
-            return Enumerable.Repeat(LedValue.ON, totalOnLeds)
-                .Concat(Enumerable.Repeat(LedValue.OFF, totalLeds - totalOnLeds))
-                .Select((state, index) => new LedControlMessage(index, state))
-                .ToArray();
+            return new LedRingService().SetRing(profibility, totalLeds);
         }
     }
 }
