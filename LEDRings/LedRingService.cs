@@ -12,9 +12,9 @@ namespace LEDRings
         {
             _ledCountRing1 = ledCountRing1;
         }
-        public MqttMessage[] SetRing(int profibility)
+        public MqttMessage[] SetRing(double profibility)
         {
-            var percentage = profibility / (double)MAX_PROFIBILITY;
+            var percentage = profibility / MAX_PROFIBILITY;
             var totalOnLeds = (int)Math.Floor(_ledCountRing1 * percentage);
             return Enumerable.Repeat(LedValue.ON, totalOnLeds)
                 .Concat(Enumerable.Repeat(LedValue.OFF, _ledCountRing1 - totalOnLeds))

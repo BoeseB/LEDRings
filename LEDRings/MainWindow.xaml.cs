@@ -20,8 +20,12 @@ namespace LEDRings
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly LedRingService _ledRingService = new LedRingService(8);
+
         private double profibility;
         private double availableAmount;
+
+
 
         public MainWindow()
         {
@@ -46,6 +50,7 @@ namespace LEDRings
         private void Persist(double profibility, double availableAmount)
         {
             MessageBox.Show($"Persisting profibility: {profibility}, availableAmount: {availableAmount}");
+            _ledRingService.SetRing(profibility);
         }
     }
 }
