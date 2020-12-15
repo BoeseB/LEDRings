@@ -20,7 +20,7 @@ namespace LEDRings
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly LedRingService _ledRingService = new LedRingService(8);
+        private readonly LedRingService _ledRingService;
 
         private double profibility;
         private double availableAmount;
@@ -30,6 +30,8 @@ namespace LEDRings
         public MainWindow()
         {
             InitializeComponent();
+            var mqttClient = new MqttClient();
+            _ledRingService = new LedRingService(mqttClient, 8);
         }
 
         private void ProfibilitySlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
